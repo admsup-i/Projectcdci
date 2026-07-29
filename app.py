@@ -9,7 +9,7 @@ APP_VERSION = "1.0.0"
 @app.route("/")
 def home():
     return jsonify({
-       "message": "Hello from the CI/CD demo app! iliyas",
+       "message": "Hello from the CI/CD demo app! iliyas Siddiqui",
         "version": APP_VERSION
     })
 
