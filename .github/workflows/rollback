@@ -1,0 +1,44 @@
+name: Rollback Deployment
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "Git SHA to roll back to (leave blank to use last known-good previous SHA)"
+        required: false
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rollback via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/ci-cd-demo
+            SHA="${{ github.event.inputs.sha }}"
+
+            if [ -z "$SHA" ]; then
+              SHA=$(sudo cat /home/${{ secrets.EC2_USERNAME }}/previous_sha.txt)
+            fi
+
+            echo "Rolling back to $SHA"
+
+            sudo docker pull $IMAGE:$SHA
+            sudo docker stop ci-cd-demo || true
+            sudo docker rm ci-cd-demo || true
+            sudo docker run -d \
+              --name ci-cd-demo \
+              --restart unless-stopped \
+              -p 8081:8081 \
+              $IMAGE:$SHA
+
+            echo $SHA | sudo tee /home/${{ secrets.EC2_USERNAME }}/current_sha.txt
+
+            # quick sanity check
+            sleep 3
+            sudo docker ps --filter "name=ci-cd-demo" --filter "status=running" | grep ci-cd-demo && \
+              echo "✅ Rollback succeeded, container running" || \
+              (echo "❌ Rollback failed, container not running" && exit 1)
