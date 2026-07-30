@@ -1,0 +1,189 @@
+:root {
+  --bg: #0b0f14;
+  --panel: #121821;
+  --border: #1f2937;
+  --text: #e5e9f0;
+  --muted: #8b96a5;
+  --accent: #3ddc97;
+  --accent-dim: #1f6b4d;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  line-height: 1.55;
+}
+
+.wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+a { color: var(--accent); }
+
+.hero {
+  padding: 72px 0 40px;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 15% 20%, rgba(61,220,151,0.08), transparent 40%),
+    var(--bg);
+}
+
+.eyebrow {
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  color: var(--accent);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  margin: 0 0 10px;
+}
+
+.hero h1 {
+  font-size: 2.6rem;
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+}
+
+.role {
+  color: var(--muted);
+  font-size: 1.1rem;
+  margin: 0 0 14px;
+}
+
+.meta {
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.panel {
+  padding: 40px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel h2 {
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin: 0 0 20px;
+}
+
+.summary {
+  color: var(--text);
+  max-width: 68ch;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.skill-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+
+.skill-card h3 {
+  font-size: 0.95rem;
+  margin: 0 0 10px;
+  color: var(--text);
+}
+
+.skill-card ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.timeline .job {
+  border-left: 2px solid var(--accent-dim);
+  padding: 4px 0 28px 22px;
+  position: relative;
+}
+
+.timeline .job::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.job-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.job-head h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.period {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.company {
+  color: var(--accent);
+  margin: 2px 0 10px;
+  font-size: 0.9rem;
+}
+
+.timeline ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.timeline ul li { margin-bottom: 4px; }
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 40px;
+}
+
+.achievements {
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.achievements li { margin-bottom: 8px; }
+
+.edu-item { margin-bottom: 16px; }
+.edu-item .degree { margin: 0; color: var(--text); font-size: 0.95rem; }
+.edu-item .school { margin: 2px 0 0; color: var(--muted); font-size: 0.85rem; }
+
+footer {
+  padding: 28px 0 60px;
+}
+
+footer p {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-family: "JetBrains Mono", monospace;
+}
+
+@media (max-width: 640px) {
+  .hero { padding: 48px 0 30px; }
+  .hero h1 { font-size: 2rem; }
+  .two-col { grid-template-columns: 1fr; }
+}

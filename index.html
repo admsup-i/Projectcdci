@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ profile.name }} — {{ profile.title }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">status: on-call ready</p>
+    <h1>{{ profile.name }}</h1>
+    <p class="role">{{ profile.title }}</p>
+    <p class="meta">{{ profile.location }} &nbsp;·&nbsp; <a href="mailto:{{ profile.email }}">{{ profile.email }}</a> &nbsp;·&nbsp; {{ profile.phone }} &nbsp;·&nbsp; <a href="{{ profile.linkedin }}" target="_blank" rel="noopener">LinkedIn</a></p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="panel">
+    <h2>Summary</h2>
+    <p class="summary">{{ profile.summary }}</p>
+  </section>
+
+  <section class="panel">
+    <h2>Core Skills</h2>
+    <div class="skills-grid">
+      {% for group in profile.skills %}
+      <div class="skill-card">
+        <h3>{{ group.category }}</h3>
+        <ul>
+          {% for item in group.skill_list %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Experience</h2>
+    <div class="timeline">
+      {% for job in profile.experience %}
+      <div class="job">
+        <div class="job-head">
+          <h3>{{ job.role }}</h3>
+          <span class="period">{{ job.period }}</span>
+        </div>
+        <p class="company">{{ job.company }}{% if job.location %} · {{ job.location }}{% endif %}</p>
+        <ul>
+          {% for h in job.highlights %}
+          <li>{{ h }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="panel two-col">
+    <div>
+      <h2>Key Achievements</h2>
+      <ul class="achievements">
+        {% for a in profile.achievements %}
+        <li>{{ a }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div>
+      <h2>Education</h2>
+      {% for edu in profile.education %}
+      <div class="edu-item">
+        <p class="degree">{{ edu.degree }}</p>
+        <p class="school">{{ edu.school }} &nbsp;·&nbsp; {{ edu.period }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Deployed via Docker + Kubernetes on EC2 · CI/CD with GitHub Actions · v{{ version }}</p>
+  </div>
+</footer>
+
+</body>
+</html>

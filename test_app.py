@@ -1,5 +1,5 @@
 import pytest
-from app import app, APP_VERSION
+from app import app, APP_VERSION, PROFILE
 
 
 @pytest.fixture
@@ -9,12 +9,18 @@ def client():
         yield client
 
 
-def test_home(client):
+def test_home_page_renders(client):
     resp = client.get("/")
     assert resp.status_code == 200
-    data = resp.get_json()
-    assert data["message"] == "Hello from the CI/CD demo app! iliyas Siddiqui, this application is hosted on k8s"
-    assert data["version"] == APP_VERSION
+    body = resp.get_data(as_text=True)
+    assert PROFILE["name"] in body
+    assert "Site Reliability Engineer" in body
+
+
+def test_home_contains_experience(client):
+    resp = client.get("/")
+    body = resp.get_data(as_text=True)
+    assert PROFILE["experience"][0]["company"] in body
 
 
 def test_health(client):
@@ -25,18 +31,12 @@ def test_health(client):
     assert "timestamp" in data
 
 
-def test_add(client):
-    resp = client.get("/add/2/3")
+def test_api_profile(client):
+    resp = client.get("/api/profile")
     assert resp.status_code == 200
     data = resp.get_json()
-    assert data["result"] == 5
-
-
-def test_add_negative(client):
-    resp = client.get("/add/-4/10")
-    assert resp.status_code == 200
-    data = resp.get_json()
-    assert data["result"] == 6
+    assert data["name"] == PROFILE["name"]
+    assert data["email"] == PROFILE["email"]
 
 
 def test_not_found(client):
