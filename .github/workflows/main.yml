@@ -56,7 +56,19 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to EC2
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy manifests to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "k8s/*"
+          target: "/home/${{ secrets.EC2_USERNAME }}/ci-cd-demo"
+
+      - name: Deploy to Kubernetes
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -65,24 +77,11 @@ jobs:
           script: |
             IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/ci-cd-demo
             SHA=${{ github.sha }}
+            DIR=/home/${{ secrets.EC2_USERNAME }}/ci-cd-demo/k8s
 
-            # Save current SHA as "previous" before overwriting, for rollback
-            if [ -f /home/${{ secrets.EC2_USERNAME }}/current_sha.txt ]; then
-              sudo cp /home/${{ secrets.EC2_USERNAME }}/current_sha.txt /home/${{ secrets.EC2_USERNAME }}/previous_sha.txt
-            fi
-            echo $SHA | sudo tee /home/${{ secrets.EC2_USERNAME }}/current_sha.txt
+            sed -i "s|image: .*|image: $IMAGE:$SHA|" $DIR/deployment.yaml
 
-            # Append to full history log too
-            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)  $SHA" | sudo tee -a /home/${{ secrets.EC2_USERNAME }}/deploy_history.log
+            kubectl apply -f $DIR/deployment.yaml
+            kubectl apply -f $DIR/service.yaml
 
-            sudo docker pull $IMAGE:$SHA
-            sudo docker stop ci-cd-demo || true
-            sudo docker rm ci-cd-demo || true
-            sudo docker run -d \
-              --name ci-cd-demo \
-              --restart unless-stopped \
-              -p 8081:8081 \
-              $IMAGE:$SHA
-
-            # Keep :latest pointing at what's actually running (optional, for visibility)
-            sudo docker tag $IMAGE:$SHA $IMAGE:latest
+            kubectl rollout status deployment/ci-cd-demo --timeout=120s
