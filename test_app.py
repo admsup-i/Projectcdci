@@ -13,7 +13,7 @@ def test_home(client):
     resp = client.get("/")
     assert resp.status_code == 200
     data = resp.get_json()
-    assert data["message"] == "Hello from the CI/CD demo app! iliyas Siddiqui"
+    assert data["message"] == "Hello from the CI/CD demo app! iliyas Ahemad Siddiqui"
     assert data["version"] == APP_VERSION
 
 
