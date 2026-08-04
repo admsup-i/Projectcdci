@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: profile-app
+  name: ci-cd-demo
   labels:
-    app: profile-app
+    app: ci-cd-demo
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: profile-app
+      app: ci-cd-demo
   template:
     metadata:
       labels:
-        app: profile-app
+        app: ci-cd-demo
     spec:
       containers:
-        - name: profile-app
-          image: DOCKERHUB_USERNAME/profile-app:IMAGE_TAG
+        - name: ci-cd-demo
+          image: DOCKERHUB_USERNAME/ci-cd-demo:IMAGE_TAG
           ports:
             - containerPort: 8081
           readinessProbe:
